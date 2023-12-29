@@ -28,70 +28,75 @@
         <div class="grid grid-cols-5 gap-8 px-32">
             <!-- Column 3 -->
             <div class="col-span-4 flex-1">
-                <div class="bg-zinc-950/70 rounded p-8 shadow-2xl border border-white" id="referenceColumn">
+                <div class="bg-zinc-950/70 rounded p-8 shadow-2xl border border-white backdrop-blur-[2px]" id="referenceColumn" can-move>
                     <div class="font-bold text-white font-jetbrains">BEAN TEMPERATURE</div>
-                    <canvas class="border border-white font-jetbrains mt-4 p-4" id="dataChart" width="800" height="400"></canvas>
+                    <canvas class="border border-white font-jetbrains mt-4 py-3 px-4" id="dataChart" width="800" height="400"></canvas>
                 </div>
                
             </div>
         
             <!-- Column 7 -->
             <div class="col-span-1 flex-1 flex flex-col" id="targetColumn">
-                <div class="bg-zinc-950/70 rounded p-4 shadow-2xl border border-white flex-1">
+                <div class="bg-zinc-950/70 rounded py-3 px-4 shadow-2xl border border-white flex-1 backdrop-blur-[2px]" can-move id="control">
                     <div class="text-white font-bold pt-2 font-jetbrains">CONTROL</div>
                     <div class="text-white">
                         <div>
                             <div class="pt-2 font-jetbrains text-xs">LOGGING</div>
                             <div class="my-1 space-x-1">
-                                <button class="border rounded p-1 bg-orange-700 hover:bg-orange-800 border-white shadow-lg" id="startButton">Start</button>
+                                <button class="px-1 bg-zinc-500/40 hover:bg-zinc-600/40 shadow-lg font-jetbrains text-zinc-200 hover:text-zinc-500 rounded-[0.5px] text-sm" id="startButton">START</button>
                             </div>
                         </div>
                         
-                        <div class="py-2">
-                            <div class="pt-2 font-jetbrains text-xs">POWER</div>
-                            <div class="my-1 space-x-4">
-                                <div class="relative flex items-center max-w-[8rem] ">
-                                    <button type="button" id="power-decrement-button" data-input-counter-decrement="quantity-input" class="bg-orange-700 hover:bg-orange-800 border border-white rounded-l px-2 h-9">
-                                        <svg class="w-3 h-3 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
-                                        </svg>
-                                    </button>
-                                    <div id="power-display" class="bg-zinc-950 border-t border-b border-white h-9 text-center text-white font-jetbrains w-8 py-2.5 pt-1.5 font-white">1</div>
-                                    <button type="button" id="power-increment-button" data-input-counter-increment="quantity-input" class="bg-orange-700 hover:bg-orange-800 border border-white rounded-r px-2 py-1 h-9">
-                                        <svg class="w-3 h-3 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
-                                        </svg>
-                                    </button>
+                        <div class="py-2 flex">
+                            <div class="flex-0">
+                                 <div class="flex-1 flex flex-row items-center pt-2"><div class="font-jetbrains text-xs">POWER</div><div class="flex-1 pl-1"><div class="px-1 flex-0 w-2 h-2 bg-[#FF0808] rounded-full"></div></div></div>
+                                <div class="my-1 space-x-4">
+                                    <div class="relative flex items-center max-w-[8rem] ">
+                                        <button type="button" id="power-decrement-button" data-input-counter-decrement="quantity-input" class="text-zinc-200 hover:text-zinc-500 rounded-tl-[0.5px] rounded-bl-[0.5px] bg-zinc-500/40 hover:bg-zinc-600/40 px-1 h-5">
+                                            <svg class="w-2 h-2 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
+                                            </svg>
+                                        </button>
+                                        <div id="power-display" class="bg-zinc-800/40  h-5 text-center text-zinc-200 text-sm font-jetbrains w-6 pb-2 font-white">1</div>
+                                        <button type="button" id="power-increment-button" data-input-counter-increment="quantity-input" class="text-zinc-200 hover:text-zinc-500 rounded-tr-[0.5px] rounded-br-[0.5px] bg-zinc-500/40 hover:bg-zinc-600/40 px-1 h-5">
+                                            <svg class="w-2 h-2 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
-                                
                             </div>
+
                         </div>
 
-                        <div class="py-2">
-                            <div class="pt-2 font-jetbrains text-xs">FAN</div>
+                        <div class="py-2 flex">
+                            <div class="flex-0">
+                                <div class="flex flex-row items-center pt-2"><div class="font-jetbrains text-xs">FAN</div><div class="flex-1 pl-1"><div class="px-1 flex-0 w-2 h-2 bg-[#0400f5] rounded-full"></div></div></div>
                             <div class="my-1 space-x-4">
-                                <div class="relative flex items-center max-w-[8rem] ">
-                                    <button type="button" id="fan-decrement-button" data-input-counter-decrement="quantity-input" class="bg-orange-700 hover:bg-orange-800 border border-white rounded-l px-2 h-9">
-                                        <svg class="w-3 h-3 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                                <div class="relative flex items-center max-w-[8rem]  ">
+                                    <button type="button" id="fan-decrement-button" data-input-counter-decrement="quantity-input" class="text-zinc-200 hover:text-zinc-500 rounded-tl-[0.5px] rounded-bl-[0.5px] bg-zinc-500/40 hover:bg-zinc-600/40 px-1 h-5">
+                                        <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
                                         </svg>
                                     </button>
-                                    <div id="fan-display" class="bg-zinc-950 border-t border-b border-white h-9 text-center text-white font-jetbrains w-8 py-2.5 pt-1.5 font-white">1</div>
-                                    <button type="button" id="fan-increment-button" data-input-counter-increment="quantity-input" class="bg-orange-700 hover:bg-orange-800 border border-white rounded-r px-2 py-1 h-9">
-                                        <svg class="w-3 h-3 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                    <div id="fan-display" class="bg-zinc-800/40  h-5 text-center text-zinc-200 text-sm font-jetbrains w-6 pb-2 font-white"">1</div>
+                                    <button type="button" id="fan-increment-button" data-input-counter-increment="quantity-input" class="text-zinc-200 hover:text-zinc-500 rounded-tr-[0.5px] rounded-br-[0.5px] bg-zinc-500/40 hover:bg-zinc-600/40 px-1 h-5">
+                                        <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
                                         </svg>
                                     </button>
                                 </div>
                                 
                             </div>
+                            </div>
+                            
                         </div>
                        
                     </div>
                         
                 </div>
-                <div class="bg-zinc-950/70 rounded mt-8 p-4 shadow-2xl border border-white flex-1 overflow-auto">
-                    <div class="text-white font-bold pt-2 font-jetbrains">TELEMETRY</div>
+                <div class="bg-zinc-950/70 rounded mt-8 py-3 px-4 shadow-2xl border border-white flex-1 overflow-auto backdrop-blur-[2px]" can-move id="telemetrydiv">
+                    <div class="text-white font-bold pt-2 font-mono">TELEMETRY</div>
                     <div class="text-zinc-100 pt-0.5 text-[6px] mb-2">Telemetry is data that has been logged to a CSV. Telemetry data may be slightly delayed.</div>
                     <div id="telemetry" class="text-white font-jetbrains text-[8px]"></div>
                 </div>
@@ -139,7 +144,7 @@
             },
             {
                 label: 'Power',
-                data: [],
+                data: [{x: "garble", y:1}],
                 borderColor: 'rgb(255,8,8)', // Color of rectangel border at top of page
                 backgroundColor: 'rgb(255,8,8)',
                 borderWidth: 3, // Border of rectangle at top of page 
@@ -151,7 +156,7 @@
            },  
            {
                 label: 'Fan',
-                data: [],
+                data: [{x:"garble", y:1}],
                 borderColor: 'rgb(45,0,245)', // Color of rectangel border at top of page
                 backgroundColor: 'rgb(45,0,245)',
                 borderWidth: 3, // Border of rectangle at top of page 
@@ -274,6 +279,9 @@
                 window.dataChart.data.datasets[1].data.push({x: data.timestamp, y: data.power});
                 window.dataChart.update();
             }
+            else {
+                window.dataChart.data.datasets[1].data.push({x: "garble", y: data.power});
+            }
         });
 
         socket.on('update_fan_data', (data) => {
@@ -283,6 +291,9 @@
                 data.timestamp = new Date(2023, 0, 1, 0, 0, data.timestamp);
                 window.dataChart.data.datasets[2].data.push({x: data.timestamp, y: data.fan});
                 window.dataChart.update();
+            }
+            else {
+                window.dataChart.data.datasets[1].data.push({x: "garble", y: data.fan});
             }
         });
 
@@ -300,21 +311,16 @@
   <script>
         const startButton = document.getElementById('startButton');
         startButton.addEventListener('click', () => {  
-            if (startButton.innerText == 'Start') {  
+            if (startButton.innerText == 'START') {  
                 socket.emit("Start timestamp", window.start_timestamp); // Send start timestamp to server
-                startButton.innerText = 'Stop';
-                window.dataChart.data.datasets[1].data.push({x: 1, y: window.power});
-                window.dataChart.update();
-                window.dataChart.data.datasets[2].data.push({x: 1, y: window.fan});
-                window.dataChart.update();
-                
+                startButton.innerText = 'STOP';                
             }
-            else if (startButton.innerText == 'Stop') {  
+            else if (startButton.innerText == 'STOP') {  
                 socket.emit("Stop logging", 0); 
-                startButton.innerText = 'Reset';
+                startButton.innerText = 'RESET';
             }
             else {
-                startButton.innerText = 'Start';
+                startButton.innerText = 'START';
                 socket.emit("Reset", 0); 
                 window.dataChart.destroy();
                 Chart.defaults.font.family = "JETBRAINS";
@@ -367,10 +373,14 @@
             }
         });
     </script>
+<script type="module">
+    import "https://unpkg.com/playhtml@latest";
+    playhtml.init();
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', function () { 
         // Get reference and target columns
-        const referenceColumn = document.getElementById('referenceColumn');
+        const referenceColumn = document.getElementById("referenceColumn");
         const targetColumn = document.getElementById('targetColumn');
 
         // Set the maximum height of the target column based on the height of the reference column

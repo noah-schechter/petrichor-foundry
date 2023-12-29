@@ -10,6 +10,7 @@ module.exports = {
     },
     fontFamily: {
       'jetbrains': ['JETBRAINS', 'monospace'],
+      'mono': ['JETBRAINS', 'ui-monospace']
     },
   },
   plugins: [],

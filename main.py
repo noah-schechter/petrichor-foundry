@@ -32,9 +32,11 @@ except:
 def read_temp_data():
     while True:
         try: 
-            line =  ser.readline().decode('utf-8').strip()
+            # line =  ser.readline().decode('utf-8').strip()
+            line = "1,2,3"
             if len(line.split(',')) >= 2:
-                temp_far = ser.readline().decode('utf-8').strip().split(',')[2]
+               # temp_far = ser.readline().decode('utf-8').strip().split(',')[2]
+                temp_far = 3
                 global start_timestamp
                 timestamp = int(time.time()) - start_timestamp # Current timestamp in milliseconds
                 
