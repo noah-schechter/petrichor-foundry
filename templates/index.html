@@ -22,14 +22,14 @@
     <div>
         <div class="py-12">
             <div class="grid grid-cols-5 gap-8 px-32 flex">
-                <div class="col-span-4 text-4xl font-bold text-white font-jetbrains">ROAST LOG</div>
+                <div class="col-span-4 text-4xl font-bold text-white font-jetbrains">PETRICHOR FOUNDRY </div>
             </div>
         </div>
         <div class="grid grid-cols-5 gap-8 px-32">
             <!-- Column 3 -->
-            <div class="col-span-4 flex-1">
+            <div class="col-span-4">
                 <div class="bg-zinc-950/70 rounded p-8 shadow-2xl border border-white backdrop-blur-[2px]" id="referenceColumn" can-move>
-                    <div class="font-bold text-white font-jetbrains">BEAN TEMPERATURE</div>
+                    <div class="font-bold text-white font-jetbrains">MONITOR</div>
                     <canvas class="border border-white font-jetbrains mt-4 py-3 px-4" id="dataChart" width="800" height="400"></canvas>
                 </div>
                
@@ -37,20 +37,29 @@
         
             <!-- Column 7 -->
             <div class="col-span-1 flex-1 flex flex-col" id="targetColumn">
-                <div class="bg-zinc-950/70 rounded py-3 px-4 shadow-2xl border border-white flex-1 backdrop-blur-[2px]" can-move id="control">
+                <div class="bg-zinc-950/70 rounded py-3 px-4 shadow-2xl border border-white flex-0 backdrop-blur-[2px]" can-move id="control">
                     <div class="text-white font-bold pt-2 font-jetbrains">CONTROL</div>
                     <div class="text-white">
-                        <div>
-                            <div class="pt-2 font-jetbrains text-xs">LOGGING</div>
-                            <div class="my-1 space-x-1">
-                                <button class="px-1 bg-zinc-500/40 hover:bg-zinc-600/40 shadow-lg font-jetbrains text-zinc-200 hover:text-zinc-500 rounded-[0.5px] text-sm" id="startButton">START</button>
+                        <div class="flex">
+                            <div class="flex-1">
+                                <div class="pt-2 font-jetbrains text-xs">LOGGING</div>
+                                <div class="mb-1 space-x-1">
+                                    <button class="px-1 bg-zinc-500/40 hover:bg-zinc-600/40 shadow-lg font-jetbrains text-zinc-200 hover:text-zinc-500 rounded-[0.5px] text-sm" id="startButton">START</button>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="pt-2 font-jetbrains text-xs">PLAYBACK</div>
+                                <div class="mb-1 space-x-1">
+                                    <button class="px-1 bg-zinc-500/40 hover:bg-zinc-600/40 shadow-lg font-jetbrains text-zinc-200 hover:text-zinc-500 rounded-[0.5px] text-sm" id="">UPLOAD</button>
+                                </div>
                             </div>
                         </div>
+                            
                         
                         <div class="py-2 flex">
-                            <div class="flex-0">
+                            <div class="flex-1">
                                  <div class="flex-1 flex flex-row items-center pt-2"><div class="font-jetbrains text-xs">POWER</div><div class="flex-1 pl-1"><div class="px-1 flex-0 w-2 h-2 bg-[#FF0808] rounded-full"></div></div></div>
-                                <div class="my-1 space-x-4">
+                                <div class="mb-1 space-x-4">
                                     <div class="relative flex items-center max-w-[8rem] ">
                                         <button type="button" id="power-decrement-button" data-input-counter-decrement="quantity-input" class="text-zinc-200 hover:text-zinc-500 rounded-tl-[0.5px] rounded-bl-[0.5px] bg-zinc-500/40 hover:bg-zinc-600/40 px-1 h-5">
                                             <svg class="w-2 h-2 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
@@ -66,13 +75,9 @@
                                     </div>
                                 </div>
                             </div>
-
-                        </div>
-
-                        <div class="py-2 flex">
-                            <div class="flex-0">
+                            <div class="flex-1 ">
                                 <div class="flex flex-row items-center pt-2"><div class="font-jetbrains text-xs">FAN</div><div class="flex-1 pl-1"><div class="px-1 flex-0 w-2 h-2 bg-[#0400f5] rounded-full"></div></div></div>
-                            <div class="my-1 space-x-4">
+                            <div class="mb-1 space-x-4">
                                 <div class="relative flex items-center max-w-[8rem]  ">
                                     <button type="button" id="fan-decrement-button" data-input-counter-decrement="quantity-input" class="text-zinc-200 hover:text-zinc-500 rounded-tl-[0.5px] rounded-bl-[0.5px] bg-zinc-500/40 hover:bg-zinc-600/40 px-1 h-5">
                                         <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
@@ -89,16 +94,35 @@
                                 
                             </div>
                             </div>
-                            
+
                         </div>
                        
                     </div>
                         
                 </div>
+                <div class="bg-zinc-950/70 rounded py-3 px-4 shadow-2xl border border-white flex-0 backdrop-blur-[2px] mt-8" can-move id="stopwatch">
+                    <div class="text-white font-bold pt-2 font-jetbrains">STOPWATCH</div>
+                    <div>
+                        <div class="font-jetbrains text-xs text-zinc-300 pt-2">ROAST DURATION</div>
+                        <div id="stopwatch_data" class="text-white text-2xl font-jetbrains bg-zinc-800/80 text-zinc-200 w-fit py-1 px-2">00:00</div>
+                    </div>
+                    <div class="flex mt-2">
+                        <div class="flex-1">
+                            <div class="flex-1 flex flex-row items-center pt-2"><div class="font-jetbrains text-xs text-white">POWER</div><div class="flex-1 pl-1"><div class="px-1 flex-0 w-2 h-2 bg-[#FF0808] rounded-full"></div></div></div>
+                            <div id="power_stopwatch_data" class="text-white text-md font-jetbrains bg-zinc-800/80 text-zinc-200 w-fit py-0.5 px-1">00:00</div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex flex-row items-center pt-2"><div class="font-jetbrains text-xs text-white">FAN</div><div class="flex-1 pl-1"><div class="px-1 flex-0 w-2 h-2 bg-[#0400f5] rounded-full"></div></div></div>
+                            <div id="fan_stopwatch_data" class="text-white text-md font-jetbrains bg-zinc-800/80 text-zinc-200 w-fit py-0.5 px-1">00:00</div>
+                    
+                        </div>
+
+
+                    </div>
+                </div>
                 <div class="bg-zinc-950/70 rounded mt-8 py-3 px-4 shadow-2xl border border-white flex-1 overflow-auto backdrop-blur-[2px]" can-move id="telemetrydiv">
                     <div class="text-white font-bold pt-2 font-mono">TELEMETRY</div>
-                    <div class="text-zinc-100 pt-0.5 text-[6px] mb-2">Telemetry is data that has been logged to a CSV. Telemetry data may be slightly delayed.</div>
-                    <div id="telemetry" class="text-white font-jetbrains text-[8px]"></div>
+                    <div id="telemetry" class="text-white font-jetbrains text-[8px] overflow-auto mb-0.5"></div>
                 </div>
             </div>
             
@@ -131,19 +155,19 @@
                 new Date('Sun Jan 01 2023 00:14:00 GMT-0800 (Pacific Standard Time)'),
             ],
             datasets: [{
-                label: 'Bean Temperature',
+                label: 'BEAN TEMPERATURE',
                 data: [],
                 borderColor: 'rgb(255, 79, 0)', // Color of rectangel border at top of page,
                 backgroundColor: 'rgb(255, 79, 0)',
                 borderWidth: 0, // Border of rectangle at top of page 
                 pointBackgroundColor: 'rgb(255, 79, 0)', // Color of point 
-                pointRadius: 0, // Radius of point 
-                borderWidth: 3, // Width of line 
+                pointRadius: 0.2, // Radius of point 
+                borderWidth: 2, // Width of line 
                 fill: false,
                 yAxisID: 'yaxis1'
             },
             {
-                label: 'Power',
+                label: 'POWER',
                 data: [{x: "garble", y:1}],
                 borderColor: 'rgb(255,8,8)', // Color of rectangel border at top of page
                 backgroundColor: 'rgb(255,8,8)',
@@ -155,7 +179,7 @@
                 yAxisID: 'yaxis2'
            },  
            {
-                label: 'Fan',
+                label: 'FAN',
                 data: [{x:"garble", y:1}],
                 borderColor: 'rgb(45,0,245)', // Color of rectangel border at top of page
                 backgroundColor: 'rgb(45,0,245)',
@@ -260,6 +284,26 @@
                 // Conver the timestmap into JS-acceptable format 
                 data.timestamp = new Date(2023, 0, 1, 0, 0, data.timestamp);
 
+                // Update main stopwatch 
+                minutes = String(data.timestamp.getMinutes()).padStart(2, '0');
+                seconds = String(data.timestamp.getSeconds()).padStart(2, '0');
+                document.getElementById("stopwatch_data").innerText = `${minutes}:${seconds}`;
+
+                // Update fan stopwatch 
+                fanValue = data.timestamp - window.last_fan_change;
+                secondsDifferenceFan = Math.floor(fanValue / 1000);  
+                minutesFan = String(Math.floor(secondsDifferenceFan / 60)).padStart(2, '0');
+                secondsFan = String(secondsDifferenceFan % 60).padStart(2, '0');
+                document.getElementById("fan_stopwatch_data").innerText = `${minutesFan}:${secondsFan}`;
+
+                // Update power stopwatch
+                // Update fan stopwatch 
+                powerValue = data.timestamp - window.last_power_change;
+                secondsDifferencePower = Math.floor(powerValue / 1000);  
+                minutesPower = String(Math.floor(secondsDifferencePower / 60)).padStart(2, '0');
+                secondsPower = String(secondsDifferencePower % 60).padStart(2, '0');
+                document.getElementById("power_stopwatch_data").innerText = `${minutesPower}:${secondsPower}`;
+
                 // Push the 
                 window.dataChart.data.datasets[0].data.push({x: data.timestamp, y: data.data});
 
@@ -277,6 +321,7 @@
             if (data.logging) {
                 data.timestamp = new Date(2023, 0, 1, 0, 0, data.timestamp);
                 window.dataChart.data.datasets[1].data.push({x: data.timestamp, y: data.power});
+                window.last_power_change = data.timestamp
                 window.dataChart.update();
             }
             else {
@@ -290,6 +335,7 @@
             if (data.logging) {
                 data.timestamp = new Date(2023, 0, 1, 0, 0, data.timestamp);
                 window.dataChart.data.datasets[2].data.push({x: data.timestamp, y: data.fan});
+                window.last_fan_change = data.timestamp
                 window.dataChart.update();
             }
             else {
@@ -378,6 +424,8 @@
     playhtml.init();
 </script>
 <script>
+    window.last_fan_change = new Date('Sun Jan 01 2023 00:00:00 GMT-0800 (Pacific Standard Time)');
+    window.last_power_change = new Date('Sun Jan 01 2023 00:00:00 GMT-0800 (Pacific Standard Time)');
     document.addEventListener('DOMContentLoaded', function () { 
         // Get reference and target columns
         const referenceColumn = document.getElementById("referenceColumn");

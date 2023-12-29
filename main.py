@@ -10,6 +10,8 @@ from flask_cors import CORS
 
 import csv_logging
 
+import random
+
 # Set up flask app
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*", transport="websocket")
@@ -33,10 +35,10 @@ def read_temp_data():
     while True:
         try: 
             # line =  ser.readline().decode('utf-8').strip()
-            line = "1,2,3"
+            line = "1,2,3" # Take this out in prod 
             if len(line.split(',')) >= 2:
                # temp_far = ser.readline().decode('utf-8').strip().split(',')[2]
-                temp_far = 3
+                temp_far = random.randint(60,70) # Take this out in prod 
                 global start_timestamp
                 timestamp = int(time.time()) - start_timestamp # Current timestamp in milliseconds
                 
