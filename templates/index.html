@@ -31,6 +31,11 @@
                 <div class="bg-zinc-950/70 rounded p-8 shadow-2xl border border-white backdrop-blur-[2px]" id="referenceColumn" can-move>
                     <div class="font-bold text-white font-jetbrains">MONITOR</div>
                     <canvas class="border border-white font-jetbrains mt-4 py-3 px-4" id="dataChart" width="800" height="400"></canvas>
+                    <div class="pt-6 font-jetbrains text-xs text-zinc-300">HISTORICAL</div>
+                    <div class="flex space-x-2">
+                        <button class="flex-0 px-1 bg-zinc-500/40 hover:bg-zinc-600/40 font-jetbrains text-zinc-200 hover:text-zinc-500 rounded-[0.5px] text-xs" onclick="chooseFile()">LOAD CSV</button>
+                        <input type="file" id="fileInput" class="file-input" accept=".csv" onchange="uploadFile()" required>
+                    </div>
                 </div>
                
             </div>
@@ -40,27 +45,28 @@
                 <div class="bg-zinc-950/70 rounded py-3 px-4 shadow-2xl border border-white flex-0 backdrop-blur-[2px]" can-move id="control">
                     <div class="text-white font-bold pt-2 font-jetbrains">CONTROL</div>
                     <div class="text-white">
-                        <div class="flex">
-                            <div class="flex-1">
-                                <div class="pt-2 font-jetbrains text-xs">LOGGING</div>
-                                <div class="mb-1 space-x-1">
-                                    <button class="px-1 bg-zinc-500/40 hover:bg-zinc-600/40 shadow-lg font-jetbrains text-zinc-200 hover:text-zinc-500 rounded-[0.5px] text-sm" id="startButton">START</button>
+                        <div class="flex flex-row">
+                            <div class="flex-0 pr-6">
+                                <div class="pt-2 font-jetbrains text-zinc-300 text-xs">LOGGING</div>
+                                <div class="flex space-x-2">
+                                    <button class="flex-0 px-1 bg-zinc-500/40 hover:bg-zinc-600/40 font-jetbrains text-zinc-200 hover:text-zinc-500 rounded-[0.5px] text-sm" id="startButton">START</button>
                                 </div>
-                            </div>
-                            <div class="flex-1">
-                                <div class="pt-2 font-jetbrains text-xs">PLAYBACK</div>
-                                <div class="mb-1 space-x-1">
-                                    <button class="px-1 bg-zinc-500/40 hover:bg-zinc-600/40 shadow-lg font-jetbrains text-zinc-200 hover:text-zinc-500 rounded-[0.5px] text-sm" id="">UPLOAD</button>
+                                    </div>
+                            <div class="flex-0 pl-1.5">
+                                <div class="pt-2 font-jetbrains text-zinc-300 text-xs">CRACK</div>
+                                <div class="flex space-x-2">
+                                    <button class="flex-0 px-1 bg-zinc-500/40 hover:bg-zinc-600/40 font-jetbrains text-zinc-200 hover:text-zinc-500 rounded-[0.5px] text-sm" style="cursor: not-allowed;" id="">FIRST</button>
+                                    
                                 </div>
                             </div>
                         </div>
                             
                         
-                        <div class="py-2 flex">
-                            <div class="flex-1">
-                                 <div class="flex-1 flex flex-row items-center pt-2"><div class="font-jetbrains text-xs">POWER</div><div class="flex-1 pl-1"><div class="px-1 flex-0 w-2 h-2 bg-[#FF0808] rounded-full"></div></div></div>
-                                <div class="mb-1 space-x-4">
-                                    <div class="relative flex items-center max-w-[8rem] ">
+                        <div class="py-2 flex flex-row">
+                            <div class="flex-0 pr-6">
+                                <div class="flex-0 flex flex-row items-center pt-2"><div class="font-jetbrains text-zinc-300 text-xs">POWER</div><div class="flex-0 pl-1"><div class="px-1 flex-0 w-2 h-2 bg-[#FF0808] rounded-full"></div></div></div>
+                                <div class="mb-1">
+                                    <div class="relative flex max-w-[8rem] ">
                                         <button type="button" id="power-decrement-button" data-input-counter-decrement="quantity-input" class="text-zinc-200 hover:text-zinc-500 rounded-tl-[0.5px] rounded-bl-[0.5px] bg-zinc-500/40 hover:bg-zinc-600/40 px-1 h-5">
                                             <svg class="w-2 h-2 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
                                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
@@ -75,9 +81,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex-1 ">
-                                <div class="flex flex-row items-center pt-2"><div class="font-jetbrains text-xs">FAN</div><div class="flex-1 pl-1"><div class="px-1 flex-0 w-2 h-2 bg-[#0400f5] rounded-full"></div></div></div>
-                            <div class="mb-1 space-x-4">
+                            <div class="flex-0 ">
+                                <div class="flex flex-row items-center pt-2"><div class="font-jetbrains text-zinc-300 text-xs">FAN</div><div class="flex-1 pl-1"><div class="px-1 flex-0 w-2 h-2 bg-[#0400f5] rounded-full"></div></div></div>
+                            <div class="mb-1">
                                 <div class="relative flex items-center max-w-[8rem]  ">
                                     <button type="button" id="fan-decrement-button" data-input-counter-decrement="quantity-input" class="text-zinc-200 hover:text-zinc-500 rounded-tl-[0.5px] rounded-bl-[0.5px] bg-zinc-500/40 hover:bg-zinc-600/40 px-1 h-5">
                                         <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
@@ -100,19 +106,20 @@
                     </div>
                         
                 </div>
+                
                 <div class="bg-zinc-950/70 rounded py-3 px-4 shadow-2xl border border-white flex-0 backdrop-blur-[2px] mt-8" can-move id="stopwatch">
                     <div class="text-white font-bold pt-2 font-jetbrains">STOPWATCH</div>
                     <div>
-                        <div class="font-jetbrains text-xs text-zinc-300 pt-2">ROAST DURATION</div>
-                        <div id="stopwatch_data" class="text-white text-2xl font-jetbrains bg-zinc-800/80 text-zinc-200 w-fit py-1 px-2">00:00</div>
+                        <div class="font-jetbrains text-xs text-zinc-300 pt-2">ROAST</div>
+                        <div id="stopwatch_data" class="text-white text-4xl font-jetbrains bg-zinc-800/80 text-zinc-200 w-fit py-1 px-2">00:00</div>
                     </div>
-                    <div class="flex mt-2">
+                    <div class="flex mt-2 py-2">
                         <div class="flex-1">
-                            <div class="flex-1 flex flex-row items-center pt-2"><div class="font-jetbrains text-xs text-white">POWER</div><div class="flex-1 pl-1"><div class="px-1 flex-0 w-2 h-2 bg-[#FF0808] rounded-full"></div></div></div>
+                            <div class="flex-1 flex flex-row items-center pt-2"><div class="font-jetbrains text-xs text-zinc-300">POWER</div><div class="flex-1 pl-1"><div class="px-1 flex-0 w-2 h-2 bg-[#FF0808] rounded-full"></div></div></div>
                             <div id="power_stopwatch_data" class="text-white text-md font-jetbrains bg-zinc-800/80 text-zinc-200 w-fit py-0.5 px-1">00:00</div>
                         </div>
                         <div class="flex-1">
-                            <div class="flex flex-row items-center pt-2"><div class="font-jetbrains text-xs text-white">FAN</div><div class="flex-1 pl-1"><div class="px-1 flex-0 w-2 h-2 bg-[#0400f5] rounded-full"></div></div></div>
+                            <div class="flex flex-row items-center pt-2"><div class="font-jetbrains text-xs text-zinc-300">FAN</div><div class="flex-1 pl-1"><div class="px-1 flex-0 w-2 h-2 bg-[#0400f5] rounded-full"></div></div></div>
                             <div id="fan_stopwatch_data" class="text-white text-md font-jetbrains bg-zinc-800/80 text-zinc-200 w-fit py-0.5 px-1">00:00</div>
                     
                         </div>
@@ -120,12 +127,13 @@
 
                     </div>
                 </div>
-                <div class="bg-zinc-950/70 rounded mt-8 py-3 px-4 shadow-2xl border border-white flex-1 overflow-auto backdrop-blur-[2px]" can-move id="telemetrydiv">
-                    <div class="text-white font-bold pt-2 font-mono">TELEMETRY</div>
-                    <div id="telemetry" class="text-white font-jetbrains text-[8px] overflow-auto mb-0.5"></div>
+                <div class="bg-zinc-950/70 rounded mt-8 py-3 px-4 shadow-2xl border border-white flex-1  backdrop-blur-[2px] z-10 overflow-auto" can-move id="telemetrydiv">
+                    <div class="text-white font-bold py-2 font-mono">TELEMETRY</div>
+                    <div id="telemetry" class="text-white font-jetbrains text-[8px] overflow-hidden pb-1 z-[-1]"></div>
                 </div>
             </div>
             
+        </div>
         </div>
     </div>
 
@@ -222,8 +230,8 @@
                 yaxis1: {
                         type: 'linear',
                         position: 'left',
-                        min: 0,
-                        max: 100,
+                        min: 150,
+                        max: 450,
                         grid: {
                             color: 'rgb(255, 255, 255)', // Set grid lines color to black
                         },
@@ -243,7 +251,7 @@
                         min: 0,
                         max: 10,
                         grid: {
-                            color: 'rgb(255, 255, 255)',
+                            display: false,
                         },
                         ticks: {
                             color: 'rgb(255, 255, 255)',
@@ -297,7 +305,6 @@
                 document.getElementById("fan_stopwatch_data").innerText = `${minutesFan}:${secondsFan}`;
 
                 // Update power stopwatch
-                // Update fan stopwatch 
                 powerValue = data.timestamp - window.last_power_change;
                 secondsDifferencePower = Math.floor(powerValue / 1000);  
                 minutesPower = String(Math.floor(secondsDifferencePower / 60)).padStart(2, '0');
@@ -339,7 +346,7 @@
                 window.dataChart.update();
             }
             else {
-                window.dataChart.data.datasets[1].data.push({x: "garble", y: data.fan});
+                window.dataChart.data.datasets[2].data.push({x: "garble", y: data.fan});
             }
         });
 
@@ -352,7 +359,29 @@
             }
         });
 
+        function uploadFile() {
+            var fileInput = document.getElementById('fileInput');
+            var file = fileInput.files[0];
+            console.log(file);
 
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var fileContent = e.target.result;
+                var data = {'file': {'name': file.name, 'content': fileContent}};
+                socket.emit('upload', data);
+            };
+
+            reader.readAsText(file);
+        }
+
+        function chooseFile() {
+            // Trigger the click event of the hidden file input
+            document.getElementById('fileInput').click();
+        }
+
+        socket.on('upload_response', function(data) {
+            document.getElementById('telemetry').innerHTML =  "LOGGED CSV DATA TO MONITOR" +  '<br>' + document.getElementById('telemetry').innerHTML;            
+        });
   </script>
   <script>
         const startButton = document.getElementById('startButton');
@@ -366,8 +395,20 @@
                 startButton.innerText = 'RESET';
             }
             else {
-                startButton.innerText = 'START';
+                // Tell server we're resetting 
                 socket.emit("Reset", 0); 
+
+                // Update buttons and indicators 
+                startButton.innerText = 'START';
+                document.getElementById("stopwatch_data").innerText = "00:00";
+                document.getElementById("fan_stopwatch_data").innerText = "00:00";
+                document.getElementById("power_stopwatch_data").innerText = "00:00";
+
+                // Update internal vars
+                window.last_fan_change = new Date('Sun Jan 01 2023 00:00:00 GMT-0800 (Pacific Standard Time)');
+                window.last_power_change = new Date('Sun Jan 01 2023 00:00:00 GMT-0800 (Pacific Standard Time)');
+                
+                // Reset chart 
                 window.dataChart.destroy();
                 Chart.defaults.font.family = "JETBRAINS";
                 const ctx = document.getElementById('dataChart').getContext('2d');
@@ -433,6 +474,7 @@
 
         // Set the maximum height of the target column based on the height of the reference column
         targetColumn.style.maxHeight = referenceColumn.offsetHeight + 'px';
+        document.getElementById('telemetrydiv').style.maxHeight = document.getElementById('telemetrydiv').offsetHeight + 'px';
     });
 </script>
 </body>

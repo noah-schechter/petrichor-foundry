@@ -6,3 +6,7 @@
     font-family: "JETBRAINS";
     src: url("JetBrainsMono[wght].ttf");
 }
+
+.file-input {
+    display: none;
+}

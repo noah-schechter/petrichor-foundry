@@ -2,14 +2,11 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 import serial
-
 import threading
 import time
 from datetime import datetime
 from flask_cors import CORS 
-
 import csv_logging
-
 import random
 
 # Set up flask app
@@ -28,9 +25,10 @@ csv_name = ""
 try: 
     ser = serial.Serial('/dev/cu.usbmodem1201', 9600)  # /dev/ttys004 /dev/cu.usbmodem1201
 except:
-    ser = 0
+    print("Error establishing connecting with device ")
+    
 
-# Function to read data from the serial port
+# Read data from the serial port, send to client, and log 
 def read_temp_data():
     while True:
         try: 
@@ -38,7 +36,7 @@ def read_temp_data():
             line = "1,2,3" # Take this out in prod 
             if len(line.split(',')) >= 2:
                # temp_far = ser.readline().decode('utf-8').strip().split(',')[2]
-                temp_far = random.randint(60,70) # Take this out in prod 
+                temp_far = random.randint(230,250) # Take this out in prod 
                 global start_timestamp
                 timestamp = int(time.time()) - start_timestamp # Current timestamp in milliseconds
                 
@@ -62,10 +60,9 @@ def read_temp_data():
 def index():
     return render_template('index.html')
 
+# Handles message from client indicating logging should start
 @socketio.on("Start timestamp")
 def handle_start_logging_message(message):
-    # Debugging
-    print('Received start timestamp:', message)
 
     # Set start_timestamp 
     global start_timestamp
@@ -80,19 +77,18 @@ def handle_start_logging_message(message):
     csv_name = 'roast_' + str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')) + '.csv'
     csv_logging.init_csv(csv_name)
 
-
+# Handles message from client indicating logging should stop 
 @socketio.on("Stop logging")
 def handle_stop_logging_message(message):
-    print('Received stop message')
 
     # Stop logging (or just keep logging false)
     global logging 
     logging = False
 
-
+# Handles message fro mclient indicating logging should be rest 
 @socketio.on("Reset")
 def handle_reset_logging_message(message):
-    print('Received reset message')
+
     # Stop logging (or just keep logging false)
     global logging 
     logging = False
@@ -101,14 +97,14 @@ def handle_reset_logging_message(message):
     global start_timestamp
     start_timestamp = 0
 
-
+# Handles message from client indicatign a change in the power level 
 @socketio.on("Power update")
 def handle_power_update(message):
-    print('Recieved power update')
+    # Init globals 
     global power 
     global logging
 
-    # If it's a permisible change, make the change 
+    # If it's a permisible change, make the change (Client should only be able to send permitted values but why not be safe?)
     if 0 < message and 10 > message:
 
         # Update power 
@@ -122,24 +118,22 @@ def handle_power_update(message):
         # Send it to the client for graphing purposes 
         socketio.emit('update_power_data', {'logging': logging, 'timestamp': timestamp, 'power': power}) # We send this data back to the client even though it know the power because we want it to use the server's timestamp 
             
-
+         # Log it
         if logging:
-            
-            # Log it
             global fan  
             global csv_name
             csv_logging.write({'Timestamp': timestamp, 'Event type': 'power update', 'Power': power, 'Fan': fan, 'Temperature': 0}, csv_name)
     else: 
         print("Power update out of bounds")
 
-
+# Handles message from client indicatign a change in the fan level 
 @socketio.on("Fan update")
 def handle_fan_update(message):
     print('Recieved fan update')
     global fan 
     global logging
 
-    # If it's a permissible change, make the change 
+     # If it's a permisible change, make the change (Client should only be able to send permitted values but why not be safe?)
     if 0 < message and 10 > message:
 
         # Update fan 
@@ -159,6 +153,21 @@ def handle_fan_update(message):
 
     else: 
         print("Fan update out of bounds ")
+
+# Event handler for CSV upload 
+@socketio.on('upload')
+def handle_upload(message):
+    file_data = message['file']
+    file_name = file_data['name']
+    file_content = file_data['content']
+
+    # Save file to the uploads folder 
+    with open(f'uploads/{file_name}', 'w') as file:
+        file.write(file_content)
+
+
+    # Tell client we finished saving the file 
+    socketio.emit('upload_response', {'temp_data': temp_data, 'fan_data': fan_data, 'power_data': power_data})
 
 # Event handler for client connection
 @socketio.on('connect')
