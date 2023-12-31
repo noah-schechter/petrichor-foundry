@@ -297,7 +297,7 @@
             window.start_timestamp = data.timestamp;
 
             // Update telemetry
-            document.getElementById('telemetry').innerHTML = data.timestamp + ":POWER:" + window.dataChart.data.datasets[1].data[window.dataChart.data.datasets[1].data.length - 1].y + ":FAN:" + window.dataChart.data.datasets[2].data[window.dataChart.data.datasets[2].data.length - 1].y + ":TEMP:" + data.data
+            document.getElementById('telemetry').innerHTML = data.timestamp + ":POWER:" + window.dataChart.data.datasets[1].data[window.dataChart.data.datasets[1].data.length - 1].y + ":FAN:" + window.dataChart.data.datasets[2].data[window.dataChart.data.datasets[2].data.length - 1].y + ":TEMP:" + data.data + "<br>" + document.getElementById('telemetry').innerHTML
                
 
             if (data.logging) {
