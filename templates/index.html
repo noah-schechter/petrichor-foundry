@@ -31,13 +31,7 @@
                 <div class="bg-zinc-950/70 rounded p-8 shadow-2xl border border-white backdrop-blur-[2px]" id="referenceColumn" can-move>
                     <div class="font-bold text-white font-jetbrains">MONITOR</div>
                     <canvas class="border border-white font-jetbrains mt-4 py-3 px-4" id="dataChart" width="800" height="400"></canvas>
-                    <div class="pt-6 font-jetbrains text-xs text-zinc-300">HISTORICAL</div>
-                    <div class="flex space-x-2">
-                        <button class="flex-0 px-1 bg-zinc-500/40 hover:bg-zinc-600/40 font-jetbrains text-zinc-200 hover:text-zinc-500 rounded-[0.5px] text-xs" onclick="chooseFile()">LOAD CSV</button>
-                        <input type="file" id="fileInput" class="file-input" accept=".csv" onchange="uploadFile()" required>
-                    </div>
                 </div>
-               
             </div>
         
             <!-- Column 7 -->
@@ -53,15 +47,15 @@
                                 </div>
                                     </div>
                             <div class="flex-0 pl-1.5">
-                                <div class="pt-2 font-jetbrains text-zinc-300 text-xs">CRACK</div>
+                                <div class="pt-2 font-jetbrains text-zinc-300 text-xs">HISTORICAL</div>
                                 <div class="flex space-x-2">
-                                    <button class="flex-0 px-1 bg-zinc-500/40 hover:bg-zinc-600/40 font-jetbrains text-zinc-200 hover:text-zinc-500 rounded-[0.5px] text-sm" style="cursor: not-allowed;" id="">FIRST</button>
-                                    
+                                    <button class="flex-0 px-1 bg-zinc-500/40 hover:bg-zinc-600/40 font-jetbrains text-zinc-200 hover:text-zinc-500 rounded-[0.5px] text-sm" style="cursor: not-allowed;" id="">LOAD CSV</button>
+                                    <input type="file" id="fileInput" class="file-input" accept=".csv" onchange="uploadFile()" required>
                                 </div>
                             </div>
                         </div>
-                            
-                        
+                    
+                     
                         <div class="py-2 flex flex-row">
                             <div class="flex-0 pr-6">
                                 <div class="flex-0 flex flex-row items-center pt-2"><div class="font-jetbrains text-zinc-300 text-xs">POWER</div><div class="flex-0 pl-1"><div class="px-1 flex-0 w-2 h-2 bg-[#FF0808] rounded-full"></div></div></div>
@@ -102,6 +96,24 @@
                             </div>
 
                         </div>
+                        <div class="py-2 flex flex-row">
+                            <div class="flex-0 pr-6">
+                                <div class="font-jetbrains text-zinc-300 text-xs">CRACK</div>
+                                <div class="flex space-x-2">
+                                    <button class="flex-0 px-1 bg-zinc-500/40 hover:bg-zinc-600/40 font-jetbrains text-zinc-200 hover:text-zinc-500 rounded-[0.5px] text-sm" id="" style="cursor: not-allowed;">FIRST</button>
+                                </div>
+                            </div>
+                            <div class="flex-0 pl-1.5">
+                                <div class="font-jetbrains text-zinc-300 text-xs">CRACK</div>
+                                <div class="flex space-x-2">
+                                    <button class="flex-0 px-1 bg-zinc-500/40 hover:bg-zinc-600/40 font-jetbrains text-zinc-200 hover:text-zinc-500 rounded-[0.5px] text-sm" id="" style="cursor: not-allowed;">SECOND</button>
+                                </div>
+                                
+                                
+                           
+                            </div>
+
+                        </div>
                        
                     </div>
                         
@@ -111,7 +123,7 @@
                     <div class="text-white font-bold pt-2 font-jetbrains">STOPWATCH</div>
                     <div>
                         <div class="font-jetbrains text-xs text-zinc-300 pt-2">ROAST</div>
-                        <div id="stopwatch_data" class="text-white text-4xl font-jetbrains bg-zinc-800/80 text-zinc-200 w-fit py-1 px-2">00:00</div>
+                        <div id="stopwatch_data" class="text-white text-2xl font-jetbrains bg-zinc-800/80 text-zinc-200 w-fit py-0.5 px-1">00:00</div>
                     </div>
                     <div class="flex mt-2 py-2">
                         <div class="flex-1">
@@ -284,9 +296,9 @@
             // Update the start_timestamp so we know the value of the most recent tick in case user clicks Start
             window.start_timestamp = data.timestamp;
 
-            // Add temp data to telemetry 
-            document.getElementById('telemetry').innerHTML = data.timestamp + ":" + "TEMP:" + data.data + '<br>' + document.getElementById('telemetry').innerHTML;
-
+            // Update telemetry
+            document.getElementById('telemetry').innerHTML = data.timestamp + ":POWER:" + window.dataChart.data.datasets[1].data[window.dataChart.data.datasets[1].data.length - 1].y + ":FAN:" + window.dataChart.data.datasets[2].data[window.dataChart.data.datasets[2].data.length - 1].y + ":TEMP:" + data.data
+               
 
             if (data.logging) {
                 // Conver the timestmap into JS-acceptable format 
@@ -311,7 +323,7 @@
                 secondsPower = String(secondsDifferencePower % 60).padStart(2, '0');
                 document.getElementById("power_stopwatch_data").innerText = `${minutesPower}:${secondsPower}`;
 
-                // Push the 
+                // Push the temp data to the chart
                 window.dataChart.data.datasets[0].data.push({x: data.timestamp, y: data.data});
 
                 // Here we use the regular temeprature update as a sort of "tick" to graph a new point for our power and fan data
@@ -324,7 +336,6 @@
         });
 
         socket.on('update_power_data', (data) => {
-            document.getElementById('telemetry').innerHTML = data.timestamp + ":" + "POWER:" + data.power + '<br>' + document.getElementById('telemetry').innerHTML;
             if (data.logging) {
                 data.timestamp = new Date(2023, 0, 1, 0, 0, data.timestamp);
                 window.dataChart.data.datasets[1].data.push({x: data.timestamp, y: data.power});
@@ -336,9 +347,7 @@
             }
         });
 
-        socket.on('update_fan_data', (data) => {
-            document.getElementById('telemetry').innerHTML = data.timestamp + ":" + "FAN:" + data.fan + '<br>' + document.getElementById('telemetry').innerHTML;
-            
+        socket.on('update_fan_data', (data) => { 
             if (data.logging) {
                 data.timestamp = new Date(2023, 0, 1, 0, 0, data.timestamp);
                 window.dataChart.data.datasets[2].data.push({x: data.timestamp, y: data.fan});
