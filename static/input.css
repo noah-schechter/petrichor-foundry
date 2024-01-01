@@ -10,3 +10,21 @@
 .file-input {
     display: none;
 }
+
+table {
+    border:none;
+    border-collapse: collapse;
+}
+
+table td {
+    border-left: 1px solid white;
+    border-right: 1px solid white;
+}
+
+table td:first-child {
+    border-left: none;
+}
+
+table td:last-child {
+    border-right: none;
+}
