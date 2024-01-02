@@ -2,5 +2,6 @@ Custom roast monitoring software for [Petrichor Coffee Supply](https://petrichor
 
 A work in progress.
 
-<img width="600" alt="Screenshot 2023-12-29 at 3 19 24 PM" src="https://github.com/noah-schechter/Coffee/assets/100018299/ab0cb3be-fb5c-4ce6-8cb7-8b977d644499">
-<img width="600" alt="Screenshot 2023-12-29 at 3 19 39 PM" src="https://github.com/noah-schechter/Coffee/assets/100018299/eb9130a6-c096-42c5-bb85-f4e9620d177a">
+<img width="630" alt="Screenshot 2024-01-01 at 4 50 26 PM" src="https://github.com/noah-schechter/petricore/assets/100018299/0ac0d0f3-3338-432c-b60b-03453756938f">
+<img width="630" alt="Screenshot 2024-01-01 at 4 50 50 PM" src="https://github.com/noah-schechter/petricore/assets/100018299/ac88f641-8e82-4bc6-a071-f2c8b46773d5">
+
