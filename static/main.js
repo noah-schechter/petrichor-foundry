@@ -22,6 +22,10 @@ function initResettableGlobals() {
 
     var secondCrackButton = document.getElementById('second-crack');
     secondCrackButton.classList.remove('cursor-not-allowed');
+
+    // In case the user reloaded the page, and the server is already running, make sure it starts a new CSV for this session
+    // (The server is entirely stateless other than this component)
+    socket.emit('New CSV', null);
 }
 
 // Connect web socket 

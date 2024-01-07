@@ -15,13 +15,18 @@ socketio = SocketIO(app, cors_allowed_origins="*", transport="websocket")
 CORS(app)
 
 # Globals 
-csv_name = "" 
+csv_name = ""
 
-# Define the serial port and CSV file
-try: 
-    ser = serial.Serial('/dev/cu.usbmodem1201', 9600)  # /dev/ttys004 /dev/cu.usbmodem1201
-except:
-    print("Error establishing connecting with device ")
+
+""" # Remvoe these when handling real data 
+while True:
+    try: 
+        ser = serial.Serial('/dev/cu.usbmodem1201', 9600)  # /dev/ttys004 /dev/cu.usbmodem1201
+        break
+    except:
+        print("Error connecting to serial port. Trying again in one second.")
+        time.sleep(1)
+""" 
     
 
 """
