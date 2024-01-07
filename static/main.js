@@ -1,11 +1,19 @@
 // Initialize global variables
+initResettableGlobals();
 window.fan = 1;
 window.power = 1;
 
-// These variables represent the last time fan and power were changed. 
-// They are only meaningful once the roast clock starts; if fan and power have never been changed, they are equivalent to roast time 
-window.last_fan_change = new Date('Sun Jan 01 2023 00:00:00 GMT-0800 (Pacific Standard Time)');
-window.last_power_change = new Date('Sun Jan 01 2023 00:00:00 GMT-0800 (Pacific Standard Time)');
+function initResettableGlobals() {
+    // Initialize global variables
+    window.started = false;
+    window.start_timestamp = null;
+    window.most_recent_timestamp = new Date(2023, 0, 1, 0, 0, 0);;
+
+    // These variables represent the last time fan and power were changed. 
+    // They are only meaningful once the roast clock starts; if fan and power have never been changed, they are equivalent to roast time 
+    window.last_fan_change = new Date(2023, 0, 1, 0, 0, 0);
+    window.last_power_change = new Date(2023, 0, 1, 0, 0, 0);
+}
 
 // Connect web socket 
 const socket = io.connect('http://localhost:5000');
@@ -14,9 +22,6 @@ const socket = io.connect('http://localhost:5000');
 const ctx = document.getElementById('dataChart').getContext('2d');
 Chart.defaults.font.family = "JETBRAINS";
 createChart(ctx);
-
-
-
 
 // Initialize the main chart 
 function createChart(ctx) {
@@ -196,96 +201,75 @@ function chooseFile() {
     document.getElementById('fileInput').click();
 }
 
-// Whenever we recieve a temp update, add it to telemetry and if we're logging, graph new temp, fan, and power points 
+function updateStopwatch(elementId, lastChangeTimestamp, dataTimestamp) {
+    document.getElementById(elementId).innerText = getStringTime(lastChangeTimestamp, dataTimestamp);
+}
+
+function getStringTime(lastChangeTimestamp, dataTimestamp) {
+    var value = dataTimestamp - lastChangeTimestamp;
+    var secondsDifference = Math.floor(value / 1000);
+    var minutes = String(Math.floor(secondsDifference / 60)).padStart(2, '0');
+    var seconds = String(secondsDifference % 60).padStart(2, '0');
+    return `${minutes}:${seconds}`; 
+}
+
+
+// Whenever we recieve a temp update, update stopwatches, telemetry info, and graph. If we're logging, send all data back to server so it can be written to CSV
 socket.on('update_temp_data', (data) => {
 
-    // Update the start_timestamp so we know the value of the most recent tick in case user clicks Start
-    window.start_timestamp = data.timestamp;
+    if (window.started) {
+        // If this is the first tick since start was pressed, make this tick the starting timestamp (yes, this is imprecise)
+        if (window.start_timestamp == null) {
+            window.start_timestamp = data.timestamp
+        }
 
-
-    if (data.logging) {
         // Convert the timestmap into JS-acceptable format 
-        data.timestamp = new Date(2023, 0, 1, 0, 0, data.timestamp);
+        const processed_timestamp = new Date(2023, 0, 1, 0, 0, data.timestamp - window.start_timestamp);
+        window.most_recent_timestamp = processed_timestamp;
 
         // Update main stopwatch 
-        minutes = String(data.timestamp.getMinutes()).padStart(2, '0');
-        seconds = String(data.timestamp.getSeconds()).padStart(2, '0');
-        document.getElementById("stopwatch_data").innerText = `${minutes}:${seconds}`;
+        updateStopwatch("stopwatch_data", new Date(2023, 0, 1, 0, 0, 0), processed_timestamp);
 
-        // Update fan stopwatch 
-        fanValue = data.timestamp - window.last_fan_change;
-        secondsDifferenceFan = Math.floor(fanValue / 1000);
-        minutesFan = String(Math.floor(secondsDifferenceFan / 60)).padStart(2, '0');
-        secondsFan = String(secondsDifferenceFan % 60).padStart(2, '0');
-        document.getElementById("fan_stopwatch_data").innerText = `${minutesFan}:${secondsFan}`;
+        // Update fan stopwatch
+        updateStopwatch("fan_stopwatch_data", window.last_fan_change, processed_timestamp);
 
         // Update power stopwatch
-        powerValue = data.timestamp - window.last_power_change;
-        secondsDifferencePower = Math.floor(powerValue / 1000);
-        minutesPower = String(Math.floor(secondsDifferencePower / 60)).padStart(2, '0');
-        secondsPower = String(secondsDifferencePower % 60).padStart(2, '0');
-        document.getElementById("power_stopwatch_data").innerText = `${minutesPower}:${secondsPower}`;
+        updateStopwatch("power_stopwatch_data", window.last_power_change, processed_timestamp);
 
-        // Push the temp data to the chart
-        window.dataChart.data.datasets[0].data.push({ x: data.timestamp, y: data.data });
+        // Append well-formed date to telemetry and, because we've started logging, send to server
+        const string_timestamp = getStringTime(new Date(2023, 0, 1, 0, 0, 0), processed_timestamp)
+        appendTelemetryData(string_timestamp, data.data, window.power, window.fan);
+        
+        // Send log data to server so it can write to a CSV
+        const log_data = {"Timestamp": string_timestamp, "Temperature": data.data, "Fan": window.fan, "Power": window.power, "Raw Temp Timestamp": data.timestamp};
+        socket.emit("log", log_data);
+        
+    
 
-        // Here we use the regular temeprature update as a sort of "tick" to graph a new point for our power and fan data
-        window.dataChart.data.datasets[1].data.push({ x: data.timestamp, y: window.dataChart.data.datasets[1].data[window.dataChart.data.datasets[1].data.length - 1].y })
-        window.dataChart.data.datasets[2].data.push({ x: data.timestamp, y: window.dataChart.data.datasets[2].data[window.dataChart.data.datasets[2].data.length - 1].y })
-        window.dataChart.update();
-
-        // Append well-formed date to telemetry 
-        appendTelemetryData(`${minutes}:${seconds}`, data.data, window.power, window.fan)
-    }
-
-    else {
-        // If we're not logging, append raw date to telemetry 
-        appendTelemetryData("N/A", data.data, window.power, window.fan)
-    }
-});
-
-socket.on('update_power_data', (data) => {
-    if (data.logging) {
-        data.timestamp = new Date(2023, 0, 1, 0, 0, data.timestamp);
-        window.dataChart.data.datasets[1].data.push({ x: data.timestamp, y: data.power });
-        window.last_power_change = data.timestamp
+        // Here we use the regular temeprature update as a sort of "tick" to graph a new point for our temp, power, and fan data (we do this )
+        window.dataChart.data.datasets[0].data.push({ x: processed_timestamp, y: data.data });
+        console.log(window.dataChart.data.datasets[0].data);
+        window.dataChart.data.datasets[1].data.push({ x: processed_timestamp, y: window.power });
+        console.log(window.dataChart.data.datasets[1].data);
+        window.dataChart.data.datasets[2].data.push({ x: processed_timestamp, y: window.fan });
         window.dataChart.update();
     }
 
     else {
-        window.dataChart.data.datasets[1].data.push({ x: "garble", y: data.power });
+        // If we're not logging, append raw date to telemetry, and, becasue we haven't started logging, don't send to server 
+        appendTelemetryData("N/A", data.data, window.power, window.fan); 
     }
 });
 
-socket.on('update_fan_data', (data) => {
-    if (data.logging) {
-        data.timestamp = new Date(2023, 0, 1, 0, 0, data.timestamp);
-        window.dataChart.data.datasets[2].data.push({ x: data.timestamp, y: data.fan });
-        window.last_fan_change = data.timestamp
-        window.dataChart.update();
-    }
-    else {
-        window.dataChart.data.datasets[2].data.push({ x: "garble", y: data.fan });
-    }
-});
 
-socket.on('failure_update', (data) => {
-    if (data.timestamp) {
-        document.getElementById('telemetry').innerHTML = data.timestamp + ":" + "ERROR:" + data.explanation + '<br>' + document.getElementById('telemetry').innerHTML;
-    }
-    else {
-        document.getElementById('telemetry').innerHTML = "UNKNOWN TIME" + ":" + "ERROR:" + data.explanation + '<br>' + document.getElementById('telemetry').innerHTML;
-    }
-});
-
-socket.on('upload_response', function (data) {
+socket.on('upload_response', function () {
     document.getElementById('telemetry').innerHTML = "LOGGED CSV DATA TO MONITOR" + '<br>' + document.getElementById('telemetry').innerHTML;
 });
 
 const startButton = document.getElementById('startButton');
 startButton.addEventListener('click', () => {
     if (startButton.innerText == 'START') {
-        socket.emit("Start timestamp", window.start_timestamp); // Send start timestamp to server
+        window.started = true;
         startButton.innerText = 'STOP';
     }
     else if (startButton.innerText == 'STOP') {
@@ -293,8 +277,6 @@ startButton.addEventListener('click', () => {
         startButton.innerText = 'RESET';
     }
     else {
-        // Tell server we're resetting 
-        socket.emit("Reset", 0);
 
         // Update buttons and indicators 
         startButton.innerText = 'START';
@@ -303,8 +285,10 @@ startButton.addEventListener('click', () => {
         document.getElementById("power_stopwatch_data").innerText = "00:00";
 
         // Update internal vars
-        window.last_fan_change = new Date('Sun Jan 01 2023 00:00:00 GMT-0800 (Pacific Standard Time)');
-        window.last_power_change = new Date('Sun Jan 01 2023 00:00:00 GMT-0800 (Pacific Standard Time)');
+        initResettableGlobals(); // We don't reset power or fan bc there's no reason to do so
+
+        // Tell server we're done logging and need a new CSV
+        socket.emit('New CSV', null);
 
         // Reset chart 
         window.dataChart.destroy();
@@ -321,7 +305,8 @@ powerDecrementButton.addEventListener('click', () => {
     if (window.power - 1 > 0) {
         window.power = window.power - 1;
         powerDisplay.innerText = window.power;
-        socket.emit("Power update", window.power);
+        window.last_power_change = window.most_recent_timestamp;
+        
     }
 });
 
@@ -330,11 +315,10 @@ const powerIncrementButton = document.getElementById('power-increment-button');
 powerIncrementButton.addEventListener('click', () => {
     if (window.power + 1 < 10) {
         window.power = window.power + 1;
-        powerDisplay.innerText = window.power;
-        socket.emit("Power update", window.power);
+        powerDisplay.innerText = window.power
+        window.last_power_change = window.most_recent_timestamp;
     }
 });
-
 
 const fanDisplay = document.getElementById('fan-display');
 const fanDecrementButton = document.getElementById('fan-decrement-button');
@@ -342,7 +326,7 @@ fanDecrementButton.addEventListener('click', () => {
     if (window.fan - 1 > 0) {
         window.fan = window.fan - 1;
         fanDisplay.innerText = window.fan;
-        socket.emit("Fan update", window.fan);
+        window.last_fan_change = window.most_recent_timestamp;
     }
 });
 
@@ -351,7 +335,7 @@ fanIncrementButton.addEventListener('click', () => {
     if (window.fan + 1 < 10) {
         window.fan = window.fan + 1;
         fanDisplay.innerText = window.fan;
-        socket.emit("Fan update", window.fan);
+        window.last_fan_change = window.most_recent_timestamp;
     }
 });
 
