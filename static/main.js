@@ -5,6 +5,8 @@ window.power = 1;
 
 function initResettableGlobals() {
     // Initialize global variables
+    window.first_crack = false;
+    window.second_crack = false;
     window.started = false;
     window.start_timestamp = null;
     window.most_recent_timestamp = new Date(2023, 0, 1, 0, 0, 0);;
@@ -13,6 +15,13 @@ function initResettableGlobals() {
     // They are only meaningful once the roast clock starts; if fan and power have never been changed, they are equivalent to roast time 
     window.last_fan_change = new Date(2023, 0, 1, 0, 0, 0);
     window.last_power_change = new Date(2023, 0, 1, 0, 0, 0);
+
+    // Reset buttons TODO make buttons not clickable until roast starts
+    var firstCrackButton = document.getElementById('first-crack');
+    firstCrackButton.classList.remove('cursor-not-allowed');
+
+    var secondCrackButton = document.getElementById('second-crack');
+    secondCrackButton.classList.remove('cursor-not-allowed');
 }
 
 // Connect web socket 
@@ -160,24 +169,15 @@ function createChart(ctx) {
 }
 
 // Function to append data after the header row in the telemetry div
-function appendTelemetryData(time, temp, power, fan) {
+function appendTelemetryData(time, temp, power, fan, first, second) {
     var table = document.getElementById("telemetry");
     var row = table.insertRow(1);
 
-    var cell1 = row.insertCell(0);
-    cell1.classList.add("text-center")
-
-    var cell2 = row.insertCell(1);
-    cell2.classList.add("text-center")
-    var cell3 = row.insertCell(2);
-    cell3.classList.add("text-center")
-    var cell4 = row.insertCell(3);
-    cell4.classList.add("text-center")
-
-    cell1.innerHTML = time;
-    cell2.innerHTML = temp;
-    cell3.innerHTML = power;
-    cell4.innerHTML = fan;
+    for (let i = 0; i < 6; i++) {
+        var cell = row.insertCell(i);
+        cell.classList.add("text-center");
+        cell.innerHTML = arguments[i];
+    }
 }
 
 
@@ -238,10 +238,16 @@ socket.on('update_temp_data', (data) => {
 
         // Append well-formed date to telemetry and, because we've started logging, send to server
         const string_timestamp = getStringTime(new Date(2023, 0, 1, 0, 0, 0), processed_timestamp)
-        appendTelemetryData(string_timestamp, data.data, window.power, window.fan);
+        appendTelemetryData(string_timestamp, data.data, window.power, window.fan, window.first_crack, window.second_crack);
         
         // Send log data to server so it can write to a CSV
-        const log_data = {"Timestamp": string_timestamp, "Temperature": data.data, "Fan": window.fan, "Power": window.power, "Raw Temp Timestamp": data.timestamp};
+        const log_data = {"Timestamp": string_timestamp, 
+                            "Temperature": data.data, 
+                            "Fan": window.fan, 
+                            "Power": window.power, 
+                            "Raw Temp Timestamp": data.timestamp, 
+                            "First Crack": window.first_crack,
+                            "Second Crack": window.second_crack};
         socket.emit("log", log_data);
         
     
@@ -257,7 +263,7 @@ socket.on('update_temp_data', (data) => {
 
     else {
         // If we're not logging, append raw date to telemetry, and, becasue we haven't started logging, don't send to server 
-        appendTelemetryData("N/A", data.data, window.power, window.fan); 
+        appendTelemetryData("N/A", data.data, window.power, window.fan, window.first_crack, window.second_crack); 
     }
 });
 
@@ -305,7 +311,7 @@ powerDecrementButton.addEventListener('click', () => {
     if (window.power - 1 > 0) {
         window.power = window.power - 1;
         powerDisplay.innerText = window.power;
-        window.last_power_change = window.most_recent_timestamp;
+        window.last_power_change = window.most_recent_timestamp; // TODO: figure out how to make this more precise
         
     }
 });
@@ -339,6 +345,21 @@ fanIncrementButton.addEventListener('click', () => {
     }
 });
 
+const firstCrackButton = document.getElementById('first-crack');
+firstCrackButton.addEventListener('click', () => {
+    window.first_crack = true;
+    // TODO Graphing logic
+    firstCrackButton.classList.add('cursor-not-allowed');
+
+}); 
+
+const secondCrackButton = document.getElementById('second-crack');
+secondCrackButton.addEventListener('click', () => {
+    window.second_crack = true;
+    // TODO Graphing logic
+    secondCrackButton.classList.add('cursor-not-allowed');
+
+}); 
 
 // Ensure telemetry div never grows in size
 document.addEventListener('DOMContentLoaded', function () {
