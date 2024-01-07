@@ -1,0 +1,5 @@
+- Fix timing to make more precise
+- Graph first and second crack lines
+- Display data from CSV upload
+- Send csv to client once roast is finished and delete it from server after use
+- Delete CSV upload from server somehow? like a temp folder or something that lasts for duration of execution only
