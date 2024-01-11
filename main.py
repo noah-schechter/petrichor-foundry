@@ -2,16 +2,20 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 import serial
-import threading
 import time
 from datetime import datetime
 from flask_cors import CORS 
 import csv_logging
 import random
+import engineio.async_drivers 
+import queue
+from engineio.async_drivers import threading
+import threading
+import os 
 
 # Set up flask app
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*", transport="websocket")
+socketio = SocketIO(app, async_mode="threading", cors_allowed_origins="*", transport="websocket")
 CORS(app)
 
 # Globals 
@@ -93,6 +97,16 @@ def handle_upload(message):
     # Tell client we finished saving the file 
     socketio.emit('upload_response')
 
+# Function to gracefully shut down the server
+def shutdown_server():
+    print("Shutting down the server...")
+    os._exit(0)
+
+# Register the shutdown_server function to be called when an HTTP request is received
+@socketio.on("Close")
+def shutdown():
+    shutdown_server()
+
 # Event handler for client connection
 @socketio.on('connect')
 def handle_connect():
@@ -105,4 +119,4 @@ if __name__ == '__main__':
     serial_thread.start()
 
     # Start the Flask-SocketIO server
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, allow_unsafe_werkzeug=True)
