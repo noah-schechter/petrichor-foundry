@@ -20,17 +20,19 @@ CORS(app)
 
 # Globals 
 csv_name = ""
+demo = os.environ.get("DEMO")
 
+if demo:
+    ser = 0
+else:
+    while True:
+        try: 
+            ser = serial.Serial('/dev/cu.usbmodem1201', 9600)  # /dev/ttys004 /dev/cu.usbmodem1201
+            break
+        except:
+            print("Error connecting to serial port. Trying again in one second.")
+            time.sleep(1)
 
-""" # Remvoe these when handling real data 
-while True:
-    try: 
-        ser = serial.Serial('/dev/cu.usbmodem1201', 9600)  # /dev/ttys004 /dev/cu.usbmodem1201
-        break
-    except:
-        print("Error connecting to serial port. Trying again in one second.")
-        time.sleep(1)
-""" 
     
 
 """
@@ -45,9 +47,11 @@ def send_tick():
     while True:
         # First, fetch temperature from the thermocouple
         try: 
-            # line =  ser.readline().decode('utf-8').strip()
-            # temp_far = ser.readline().decode('utf-8').strip().split(',')[2]
-            temp_far = random.randint(230,250) # Take this out in prod 
+            if demo: 
+                temp_far = random.randint(230,300) # Take this out in prod 
+            else:
+                line =  ser.readline().decode('utf-8').strip()
+                temp_far = ser.readline().decode('utf-8').strip().split(',')[2]
         
         except:
             temp_far = "ERR"
