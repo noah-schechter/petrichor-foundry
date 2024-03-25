@@ -123,4 +123,4 @@ if __name__ == '__main__':
     serial_thread.start()
 
     # Start the Flask-SocketIO server
-    socketio.run(app, debug=True, allow_unsafe_werkzeug=True)
+    socketio.run(app, debug=False, allow_unsafe_werkzeug=True)
