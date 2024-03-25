@@ -2,31 +2,37 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 import serial
-import threading
 import time
 from datetime import datetime
 from flask_cors import CORS 
 import csv_logging
 import random
+import engineio.async_drivers 
+import queue
+from engineio.async_drivers import threading
+import threading
+import os 
 
 # Set up flask app
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*", transport="websocket")
+socketio = SocketIO(app, async_mode="threading", cors_allowed_origins="*", transport="websocket")
 CORS(app)
 
 # Globals 
 csv_name = ""
+demo = os.environ.get("DEMO")
 
+if demo:
+    ser = 0
+else:
+    while True:
+        try: 
+            ser = serial.Serial('/dev/cu.usbmodem1201', 9600)  # /dev/ttys004 /dev/cu.usbmodem1201
+            break
+        except:
+            print("Error connecting to serial port. Trying again in one second.")
+            time.sleep(1)
 
-""" # Remvoe these when handling real data 
-while True:
-    try: 
-        ser = serial.Serial('/dev/cu.usbmodem1201', 9600)  # /dev/ttys004 /dev/cu.usbmodem1201
-        break
-    except:
-        print("Error connecting to serial port. Trying again in one second.")
-        time.sleep(1)
-""" 
     
 
 """
@@ -41,9 +47,11 @@ def send_tick():
     while True:
         # First, fetch temperature from the thermocouple
         try: 
-            # line =  ser.readline().decode('utf-8').strip()
-            # temp_far = ser.readline().decode('utf-8').strip().split(',')[2]
-            temp_far = random.randint(230,250) # Take this out in prod 
+            if demo: 
+                temp_far = random.randint(230,300) # Take this out in prod 
+            else:
+                line =  ser.readline().decode('utf-8').strip()
+                temp_far = ser.readline().decode('utf-8').strip().split(',')[2]
         
         except:
             temp_far = "ERR"
@@ -93,6 +101,16 @@ def handle_upload(message):
     # Tell client we finished saving the file 
     socketio.emit('upload_response')
 
+# Function to gracefully shut down the server
+def shutdown_server():
+    print("Shutting down the server...")
+    os._exit(0)
+
+# Register the shutdown_server function to be called when an HTTP request is received
+@socketio.on("Close")
+def shutdown():
+    shutdown_server()
+
 # Event handler for client connection
 @socketio.on('connect')
 def handle_connect():
@@ -105,4 +123,4 @@ if __name__ == '__main__':
     serial_thread.start()
 
     # Start the Flask-SocketIO server
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, allow_unsafe_werkzeug=True)

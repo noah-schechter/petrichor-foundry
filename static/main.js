@@ -271,6 +271,10 @@ socket.on('update_temp_data', (data) => {
     }
 });
 
+const endButton = document.getElementById('end');
+endButton.addEventListener('click', () => {
+    socket.emit('Close');
+})
 
 socket.on('upload_response', function () {
     document.getElementById('telemetry').innerHTML = "LOGGED CSV DATA TO MONITOR" + '<br>' + document.getElementById('telemetry').innerHTML;
@@ -283,7 +287,7 @@ startButton.addEventListener('click', () => {
         startButton.innerText = 'STOP';
     }
     else if (startButton.innerText == 'STOP') {
-        socket.emit("Stop logging", 0);
+        window.started = false;
         startButton.innerText = 'RESET';
     }
     else {
