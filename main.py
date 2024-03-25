@@ -106,10 +106,12 @@ def shutdown_server():
     print("Shutting down the server...")
     os._exit(0)
 
+"""
 # Register the shutdown_server function to be called when an HTTP request is received
 @socketio.on("Close")
 def shutdown():
     shutdown_server()
+"""
 
 # Event handler for client connection
 @socketio.on('connect')
