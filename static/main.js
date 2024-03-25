@@ -26,7 +26,7 @@ function initResettableGlobals() {
 
 // Connect web socket 
 // If running locally, change to 'http://localhost:5000'
-const socket = io.connect('http://petrichor-foundry.vercel.app');
+const socket = io.connect('https://petrichor-foundry.vercel.app');
 
 // In case the user reloaded the page, and the server is already running, make sure it starts a new CSV for this session
 // (The server is entirely stateless other than this component)
