@@ -1,0 +1,7 @@
+Timestamp,Power,Fan,Temperature,Raw Temp Timestamp,First Crack,Second Crack
+00:00,1,1,236,1704612973,False,False
+00:01,1,1,245,1704612974,False,False
+00:02,2,1,237,1704612975,False,False
+00:03,9,1,234,1704612976,False,False
+00:04,9,1,243,1704612977,False,False
+00:05,9,1,245,1704612978,False,False
