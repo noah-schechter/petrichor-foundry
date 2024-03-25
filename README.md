@@ -1,4 +1,5 @@
-Custom roast monitoring software for [Petrichor Coffee Supply](https://petrichorsupply.vercel.app), my coffee roasting project.
+Custom coffee roast monitoring software. Demo available at [petrichor-foundry.vercel.app](petrichor-foundry.vercel.app) with dummy temperature data; to use in production, run locally and connect your Arduino-based temperature sensor to a serial port. 
+
 
 A work in progress.
 
